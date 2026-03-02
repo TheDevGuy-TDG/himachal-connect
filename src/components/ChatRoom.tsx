@@ -460,7 +460,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
         {/* Video section */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", ...(isMobile ? {} : { justifyContent: "center", alignItems: "center" }) }}>
           <div style={{
-            width: "100%", ...(isMobile ? { flex: 1 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: isMobile ? 12 : 20, overflow: "hidden",
+            width: "100%", ...(isMobile ? { flex: 1, minHeight: 400 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: isMobile ? 12 : 20, overflow: "hidden",
             background: "linear-gradient(160deg, #0d0520, #080318)",
             border: "1px solid rgba(168,85,247,0.15)",
             boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
@@ -478,24 +478,24 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 </div>
               </>
             ) : (
-              <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, padding: 30 }}>
+              <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isMobile ? 14 : 20, padding: isMobile ? 20 : 30 }}>
                 {status === "connecting" && (
                   <>
-                    <div style={{ width: 60, height: 60, borderRadius: "50%", border: "4px solid rgba(168,85,247,0.2)", borderTopColor: "#a855f7", animation: "spin 1s linear infinite" }} />
-                    <p style={{ color: "#b090c0", fontSize: 17 }}>Connecting...</p>
+                    <div style={{ width: isMobile ? 48 : 60, height: isMobile ? 48 : 60, borderRadius: "50%", border: "4px solid rgba(168,85,247,0.2)", borderTopColor: "#a855f7", animation: "spin 1s linear infinite" }} />
+                    <p style={{ color: "#b090c0", fontSize: isMobile ? 15 : 17 }}>Connecting...</p>
                   </>
                 )}
                 {status === "waiting" && (
                   <>
                     <div className="anim-pulse-glow" style={{
-                      width: 100, height: 100, borderRadius: "50%",
+                      width: isMobile ? 70 : 100, height: isMobile ? 70 : 100, borderRadius: "50%",
                       background: "linear-gradient(135deg, #e11d48, #7c3aed)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                    }}><Users style={{ width: 44, height: 44, color: "#fff" }} /></div>
+                    }}><Users style={{ width: isMobile ? 32 : 44, height: isMobile ? 32 : 44, color: "#fff" }} /></div>
                     <div style={{ textAlign: "center" }}>
-                      <p style={{ fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Finding someone for you...</p>
-                      <p style={{ color: "#a080b0", fontSize: 15 }}>Wait karo, koi milega abhi! 🏔️</p>
-                      <div className="loading-dots" style={{ marginTop: 16 }}><span /><span /><span /></div>
+                      <p style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Finding someone for you...</p>
+                      <p style={{ color: "#a080b0", fontSize: isMobile ? 13 : 15 }}>Wait karo, koi milega abhi! 🏔️</p>
+                      <div className="loading-dots" style={{ marginTop: 12 }}><span /><span /><span /></div>
                     </div>
                   </>
                 )}
