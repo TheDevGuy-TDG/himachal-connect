@@ -473,7 +473,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 height: "50%", position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
-                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                 <div style={{
                   position: "absolute", top: 10, left: 10, display: "flex", alignItems: "center", gap: 6,
                   padding: "4px 12px", borderRadius: 50, background: "rgba(10,5,20,0.75)", backdropFilter: "blur(10px)",
@@ -487,7 +487,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 height: "50%", position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
-                <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
+                <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "contain", transform: "scaleX(-1)" }} />
                 <div style={{ position: "absolute", bottom: 8, left: 10, fontSize: 12, color: "rgba(255,255,255,0.7)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
               </div>
             </div>
