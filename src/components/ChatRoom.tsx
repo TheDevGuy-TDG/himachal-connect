@@ -467,10 +467,10 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
         {/* Video section */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", ...(isMobile ? {} : { justifyContent: "center", alignItems: "center" }) }}>
           {isMobile && status === "matched" ? (
-            /* Mobile matched: split screen - half/half */
-            <>
+            /* Mobile matched: split screen - exact 50/50 */
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, minHeight: 0 }}>
               <div style={{
-                flex: "1 1 0", minHeight: 0, position: "relative", borderRadius: 12, overflow: "hidden",
+                height: "50%", position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
                 <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -484,13 +484,13 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 </div>
               </div>
               <div style={{
-                flex: "1 1 0", minHeight: 0, position: "relative", borderRadius: 12, overflow: "hidden",
+                height: "50%", position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
                 <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
                 <div style={{ position: "absolute", bottom: 8, left: 10, fontSize: 12, color: "rgba(255,255,255,0.7)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
               </div>
-            </>
+            </div>
           ) : (
             /* Desktop matched / all non-matched states */
             <div style={{
