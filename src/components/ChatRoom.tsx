@@ -458,9 +458,9 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
       {/* ===== MAIN ===== */}
       <div style={{ flex: 1, display: "flex", position: "relative", zIndex: 5, padding: 12, gap: 12, overflow: "hidden", flexDirection: isMobile ? "column" : "row" }}>
         {/* Video section */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", ...(isMobile ? {} : { justifyContent: "center", alignItems: "center" }) }}>
           <div style={{
-            width: "100%", ...(isMobile ? { minHeight: 300 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: 20, overflow: "hidden",
+            width: "100%", ...(isMobile ? { flex: 1 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: isMobile ? 12 : 20, overflow: "hidden",
             background: "linear-gradient(160deg, #0d0520, #080318)",
             border: "1px solid rgba(168,85,247,0.15)",
             boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
