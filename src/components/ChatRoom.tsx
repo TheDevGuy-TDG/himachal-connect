@@ -458,12 +458,12 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
       {/* ===== MAIN ===== */}
       <div style={{ flex: 1, display: "flex", position: "relative", zIndex: 5, padding: 12, gap: 12, overflow: "hidden", flexDirection: isMobile ? "column" : "row" }}>
         {/* Video section */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", justifyContent: "center", alignItems: "center" }}>
           <div style={{
-            flex: 1, position: "relative", borderRadius: 20, overflow: "hidden",
+            width: "100%", aspectRatio: "16/9", position: "relative", borderRadius: 20, overflow: "hidden",
             background: "linear-gradient(160deg, #0d0520, #080318)",
             border: "1px solid rgba(168,85,247,0.15)",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)", minHeight: 250,
+            boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
           }}>
             {status === "matched" ? (
               <>
@@ -518,18 +518,18 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 )}
               </div>
             )}
-          </div>
 
-          {/* Local video */}
-          <div style={{
-            position: "absolute", bottom: 80, right: 16,
-            width: isMobile ? 120 : 180, height: isMobile ? 90 : 135,
-            borderRadius: 14, overflow: "hidden", zIndex: 15,
-            border: "2px solid rgba(168,85,247,0.35)",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(168,85,247,0.1)", background: "#000",
-          }}>
-            <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
-            <div style={{ position: "absolute", bottom: 4, left: 8, fontSize: 11, color: "rgba(255,255,255,0.6)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
+            {/* Local video */}
+            <div style={{
+              position: "absolute", bottom: 12, right: 12, zIndex: 15,
+              width: isMobile ? 110 : 160, height: isMobile ? 82 : 120,
+              borderRadius: 12, overflow: "hidden",
+              border: "2px solid rgba(168,85,247,0.35)",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(168,85,247,0.1)", background: "#000",
+            }}>
+              <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
+              <div style={{ position: "absolute", bottom: 4, left: 8, fontSize: 11, color: "rgba(255,255,255,0.6)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
+            </div>
           </div>
 
           {/* Controls */}
