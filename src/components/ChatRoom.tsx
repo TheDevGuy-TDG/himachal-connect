@@ -467,7 +467,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
           }}>
             {status === "matched" ? (
               <>
-                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }} />
                 <div style={{
                   position: "absolute", top: 14, left: 14, display: "flex", alignItems: "center", gap: 8,
                   padding: "6px 16px", borderRadius: 50, background: "rgba(10,5,20,0.75)", backdropFilter: "blur(10px)",
