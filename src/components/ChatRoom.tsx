@@ -272,6 +272,13 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
     };
   }, [userName, userGender, createPeerConnection, cleanupPeer, resetState]);
 
+  // Re-attach local stream when video element changes (mobile split vs overlay)
+  useEffect(() => {
+    if (localVideoRef.current && localStreamRef.current) {
+      localVideoRef.current.srcObject = localStreamRef.current;
+    }
+  }, [status, isMobile]);
+
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const toggleVideo = () => {
@@ -459,78 +466,106 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
       <div style={{ flex: 1, display: "flex", position: "relative", zIndex: 5, padding: 12, gap: 12, overflow: "hidden", flexDirection: isMobile ? "column" : "row" }}>
         {/* Video section */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", ...(isMobile ? {} : { justifyContent: "center", alignItems: "center" }) }}>
-          <div style={{
-            width: "100%", ...(isMobile ? { flex: 1, minHeight: 400 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: isMobile ? 12 : 20, overflow: "hidden",
-            background: "linear-gradient(160deg, #0d0520, #080318)",
-            border: "1px solid rgba(168,85,247,0.15)",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
-          }}>
-            {status === "matched" ? (
-              <>
-                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }} />
+          {isMobile && status === "matched" ? (
+            /* Mobile matched: split screen - half/half */
+            <>
+              <div style={{
+                flex: 1, position: "relative", borderRadius: 12, overflow: "hidden",
+                background: "#000", border: "1px solid rgba(168,85,247,0.15)",
+              }}>
+                <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 <div style={{
-                  position: "absolute", top: 14, left: 14, display: "flex", alignItems: "center", gap: 8,
-                  padding: "6px 16px", borderRadius: 50, background: "rgba(10,5,20,0.75)", backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(168,85,247,0.2)", fontSize: 13, color: "#e0d0f0",
+                  position: "absolute", top: 10, left: 10, display: "flex", alignItems: "center", gap: 6,
+                  padding: "4px 12px", borderRadius: 50, background: "rgba(10,5,20,0.75)", backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(168,85,247,0.2)", fontSize: 12, color: "#e0d0f0",
                 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.5)" }} />
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e" }} />
                   {partnerName}
                 </div>
-              </>
-            ) : (
-              <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isMobile ? 14 : 20, padding: isMobile ? 20 : 30 }}>
-                {status === "connecting" && (
-                  <>
-                    <div style={{ width: isMobile ? 48 : 60, height: isMobile ? 48 : 60, borderRadius: "50%", border: "4px solid rgba(168,85,247,0.2)", borderTopColor: "#a855f7", animation: "spin 1s linear infinite" }} />
-                    <p style={{ color: "#b090c0", fontSize: isMobile ? 15 : 17 }}>Connecting...</p>
-                  </>
-                )}
-                {status === "waiting" && (
-                  <>
-                    <div className="anim-pulse-glow" style={{
-                      width: isMobile ? 70 : 100, height: isMobile ? 70 : 100, borderRadius: "50%",
-                      background: "linear-gradient(135deg, #e11d48, #7c3aed)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}><Users style={{ width: isMobile ? 32 : 44, height: isMobile ? 32 : 44, color: "#fff" }} /></div>
-                    <div style={{ textAlign: "center" }}>
-                      <p style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Finding someone for you...</p>
-                      <p style={{ color: "#a080b0", fontSize: isMobile ? 13 : 15 }}>Wait karo, koi milega abhi! 🏔️</p>
-                      <div className="loading-dots" style={{ marginTop: 12 }}><span /><span /><span /></div>
-                    </div>
-                  </>
-                )}
-                {status === "disconnected" && (
-                  <>
-                    <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(244,63,94,0.1)", border: "1px solid rgba(244,63,94,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <X style={{ width: 40, height: 40, color: "#f43f5e" }} />
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                      <p style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Partner disconnect ho gaya</p>
-                      <p style={{ color: "#a080b0", marginBottom: 20 }}>Koi nahi, naya dhoondh lete hain!</p>
-                      <button onClick={handleFindNew} className="anim-gradient" style={{
-                        padding: "14px 32px", borderRadius: 50, border: "none", cursor: "pointer",
-                        background: "linear-gradient(135deg, #e11d48, #9333ea, #e11d48)", backgroundSize: "200% 200%",
-                        color: "#fff", fontSize: 16, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 8,
-                        boxShadow: "0 6px 25px rgba(225,29,72,0.3)",
-                      }}><SkipForward style={{ width: 18, height: 18 }} />Find Next</button>
-                    </div>
-                  </>
-                )}
               </div>
-            )}
-
-            {/* Local video */}
+              <div style={{
+                flex: 1, position: "relative", borderRadius: 12, overflow: "hidden",
+                background: "#000", border: "1px solid rgba(168,85,247,0.15)",
+              }}>
+                <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
+                <div style={{ position: "absolute", bottom: 8, left: 10, fontSize: 12, color: "rgba(255,255,255,0.7)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
+              </div>
+            </>
+          ) : (
+            /* Desktop matched / all non-matched states */
             <div style={{
-              position: "absolute", bottom: 12, right: 12, zIndex: 15,
-              width: isMobile ? 110 : 160, height: isMobile ? 82 : 120,
-              borderRadius: 12, overflow: "hidden",
-              border: "2px solid rgba(168,85,247,0.35)",
-              boxShadow: "0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(168,85,247,0.1)", background: "#000",
+              width: "100%", ...(isMobile ? { flex: 1, minHeight: 400 } : { aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: isMobile ? 12 : 20, overflow: "hidden",
+              background: "linear-gradient(160deg, #0d0520, #080318)",
+              border: "1px solid rgba(168,85,247,0.15)",
+              boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
             }}>
-              <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
-              <div style={{ position: "absolute", bottom: 4, left: 8, fontSize: 11, color: "rgba(255,255,255,0.6)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
+              {status === "matched" ? (
+                <>
+                  <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }} />
+                  <div style={{
+                    position: "absolute", top: 14, left: 14, display: "flex", alignItems: "center", gap: 8,
+                    padding: "6px 16px", borderRadius: 50, background: "rgba(10,5,20,0.75)", backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(168,85,247,0.2)", fontSize: 13, color: "#e0d0f0",
+                  }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.5)" }} />
+                    {partnerName}
+                  </div>
+                </>
+              ) : (
+                <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: isMobile ? 14 : 20, padding: isMobile ? 20 : 30 }}>
+                  {status === "connecting" && (
+                    <>
+                      <div style={{ width: isMobile ? 48 : 60, height: isMobile ? 48 : 60, borderRadius: "50%", border: "4px solid rgba(168,85,247,0.2)", borderTopColor: "#a855f7", animation: "spin 1s linear infinite" }} />
+                      <p style={{ color: "#b090c0", fontSize: isMobile ? 15 : 17 }}>Connecting...</p>
+                    </>
+                  )}
+                  {status === "waiting" && (
+                    <>
+                      <div className="anim-pulse-glow" style={{
+                        width: isMobile ? 70 : 100, height: isMobile ? 70 : 100, borderRadius: "50%",
+                        background: "linear-gradient(135deg, #e11d48, #7c3aed)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}><Users style={{ width: isMobile ? 32 : 44, height: isMobile ? 32 : 44, color: "#fff" }} /></div>
+                      <div style={{ textAlign: "center" }}>
+                        <p style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Finding someone for you...</p>
+                        <p style={{ color: "#a080b0", fontSize: isMobile ? 13 : 15 }}>Wait karo, koi milega abhi! 🏔️</p>
+                        <div className="loading-dots" style={{ marginTop: 12 }}><span /><span /><span /></div>
+                      </div>
+                    </>
+                  )}
+                  {status === "disconnected" && (
+                    <>
+                      <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(244,63,94,0.1)", border: "1px solid rgba(244,63,94,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <X style={{ width: 40, height: 40, color: "#f43f5e" }} />
+                      </div>
+                      <div style={{ textAlign: "center" }}>
+                        <p style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Partner disconnect ho gaya</p>
+                        <p style={{ color: "#a080b0", marginBottom: 20 }}>Koi nahi, naya dhoondh lete hain!</p>
+                        <button onClick={handleFindNew} className="anim-gradient" style={{
+                          padding: "14px 32px", borderRadius: 50, border: "none", cursor: "pointer",
+                          background: "linear-gradient(135deg, #e11d48, #9333ea, #e11d48)", backgroundSize: "200% 200%",
+                          color: "#fff", fontSize: 16, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 8,
+                          boxShadow: "0 6px 25px rgba(225,29,72,0.3)",
+                        }}><SkipForward style={{ width: 18, height: 18 }} />Find Next</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Local video overlay */}
+              <div style={{
+                position: "absolute", bottom: 12, right: 12, zIndex: 15,
+                width: isMobile ? 110 : 160, height: isMobile ? 82 : 120,
+                borderRadius: 12, overflow: "hidden",
+                border: "2px solid rgba(168,85,247,0.35)",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(168,85,247,0.1)", background: "#000",
+              }}>
+                <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
+                <div style={{ position: "absolute", bottom: 4, left: 8, fontSize: 11, color: "rgba(255,255,255,0.6)", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>You</div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Controls */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "10px 0" }}>
