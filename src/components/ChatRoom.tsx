@@ -332,7 +332,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
   );
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#06020f", overflow: "hidden" }}>
+    <div style={{ ...(isMobile ? { minHeight: "100vh" } : { height: "100vh", overflow: "hidden" }), display: "flex", flexDirection: "column", background: "#06020f" }}>
       {/* Error toast */}
       {errorMsg && (
         <div style={{
@@ -460,7 +460,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
         {/* Video section */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, minHeight: 0, position: "relative", justifyContent: "center", alignItems: "center" }}>
           <div style={{
-            width: "100%", aspectRatio: "16/9", maxHeight: "calc(100vh - 160px)", position: "relative", borderRadius: 20, overflow: "hidden",
+            width: "100%", aspectRatio: "16/9", ...(isMobile ? {} : { maxHeight: "calc(100vh - 160px)" }), position: "relative", borderRadius: 20, overflow: "hidden",
             background: "linear-gradient(160deg, #0d0520, #080318)",
             border: "1px solid rgba(168,85,247,0.15)",
             boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 4px 30px rgba(0,0,0,0.3)",
