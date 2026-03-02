@@ -470,7 +470,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
             /* Mobile matched: split screen - half/half */
             <>
               <div style={{
-                flex: 1, position: "relative", borderRadius: 12, overflow: "hidden",
+                flex: "1 1 0", minHeight: 0, position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
                 <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -484,7 +484,7 @@ export default function ChatRoom({ userName, userGender, onLeave }: ChatRoomProp
                 </div>
               </div>
               <div style={{
-                flex: 1, position: "relative", borderRadius: 12, overflow: "hidden",
+                flex: "1 1 0", minHeight: 0, position: "relative", borderRadius: 12, overflow: "hidden",
                 background: "#000", border: "1px solid rgba(168,85,247,0.15)",
               }}>
                 <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }} />
